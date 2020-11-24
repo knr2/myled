@@ -10,6 +10,10 @@ MODULE_DESCRIPTION("driver for LED control");
 MODULE_LICENSE("GPL");
 MODULE_VERSION("0.0.1");
 
+#define LED_red_gpio 23
+#define LED_yellow_gpio 24
+#define LED_blue_gpio 25
+
 static dev_t dev;
 static struct cdev cdv;
 static struct class *cls = NULL;
@@ -25,30 +29,30 @@ static ssize_t led_write(struct file *filp, const char *buf, size_t count, loff_
     //全LED停止
     if (c == '0')
     {
-        gpio_base[10] = 1 << 23;
-        gpio_base[10] = 1 << 24;
-        gpio_base[10] = 1 << 25;
+        gpio_base[10] = 1 << LED_blue_gpio;
+        gpio_base[10] = 1 << LED_yellow_gpio;
+        gpio_base[10] = 1 << LED_red_gpio;
     }
     //青信号
     else if (c == '1')
     {
-        gpio_base[10] = 1 << 23;
-        gpio_base[10] = 1 << 24;
-        gpio_base[7] = 1 << 25;
+        gpio_base[7] = 1 << LED_blue_gpio;
+        gpio_base[10] = 1 << LED_yellow_gpio;
+        gpio_base[10] = 1 << LED_red_gpio;
     }
     //黄信号
     else if (c == '2')
     {
-        gpio_base[10] = 1 << 23;
-        gpio_base[7] = 1 << 24;
-        gpio_base[10] = 1 << 25;
+        gpio_base[10] = 1 << LED_blue_gpio;
+        gpio_base[7] = 1 << LED_yellow_gpio;
+        gpio_base[10] = 1 << LED_red_gpio;
     }
     //赤信号
     else if (c == '3')
     {
-        gpio_base[7] = 1 << 23;
-        gpio_base[10] = 1 << 24;
-        gpio_base[10] = 1 << 25;
+        gpio_base[10] = 1 << LED_blue_gpio;
+        gpio_base[10] = 1 << LED_yellow_gpio;
+        gpio_base[7] = 1 << LED_red_gpio;
     }
 
     return 1;
@@ -64,22 +68,22 @@ static int __init init_mod(void)
 
     gpio_base = ioremap_nocache(0xfe200000, 0xA0);
 
-    //赤色LED宣言
-    const u32 led_red = 23;
+    //青色LED宣言
+    const u32 led_red = LED_blue_gpio;
     const u32 index_red = led_red / 10;
     const u32 shift_red = (led_red % 10) * 3;
     const u32 mask_red = ~(0x7 << shift_red);
     gpio_base[index_red] = (gpio_base[index_red] & mask_red) | (0x1 << shift_red);
 
     //黄色LED宣言
-    const u32 led_yellow = 24;
+    const u32 led_yellow = LED_yellow_gpio;
     const u32 index_yellow = led_yellow / 10;
     const u32 shift_yellow = (led_yellow % 10) * 3;
     const u32 mask_yellow = ~(0x7 << shift_yellow);
     gpio_base[index_yellow] = (gpio_base[index_yellow] & mask_yellow) | (0x1 << shift_yellow);
 
-    //青色LED宣言
-    const u32 led_blue = 25;
+    //赤色LED宣言
+    const u32 led_blue = LED_red_gpio;
     const u32 index_blue = led_blue / 10;
     const u32 shift_blue = (led_blue % 10) * 3;
     const u32 mask_blue = ~(0x7 << shift_blue);
