@@ -26,12 +26,13 @@ int main()
     {
         //青
         std::system("echo 1 > /dev/myled0");
-        sleep(10);
         //黄
+        sleep(TIME_LIMIT_BLUE);
         std::system("echo 2 > /dev/myled0");
-
+        sleep(TIME_LIMIT_YELLOW);
         //赤
         std::system("echo 3 > /dev/myled0");
+        sleep(TIME_LIMIT_RED);
     }
     std::system("echo 0 > /dev/myled0");
     std::system("sudo rmmod myled.ko");
